@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { Icon } from "semantic-ui-react";
 
 import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
@@ -29,15 +30,24 @@ const PatientPage: React.FC = () => {
     }
   }, [id, patientById, dispatch]);
 
+  const genderIcon = () => {
+    switch (patientById?.gender) {
+      case "female":
+        return <Icon name="venus" />;
+      case "male":
+        return <Icon name="mars" />;
+      default:
+        return <Icon name="neuter" />;
+    }
+  };
+
   return (
     <div className="App">
-      <h3>{patientById?.name}</h3>
+      <h3>{patientById?.name} {genderIcon()}</h3>
       <div>
-        gender: {patientById?.gender}
+        ssn: {patientById?.ssn}
         <br />
-                ssn: {patientById?.ssn}
-        <br />
-                occupation: {patientById?.occupation}
+        occupation: {patientById?.occupation}
       </div>
     </div>
   );
