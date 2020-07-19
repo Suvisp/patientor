@@ -42,14 +42,35 @@ const PatientPage: React.FC = () => {
     }
   };
 
+  if (!patientById)
+    return <div>no patient details</div>;
+
   return (
     <div className="App">
-      <h3>{patientById?.name} {genderIcon()}</h3>
+      <h3>{patientById.name} {genderIcon()}</h3>
       <div>
-        ssn: {patientById?.ssn}
+        ssn: {patientById.ssn}
         <br />
-        occupation: {patientById?.occupation}
+        occupation: {patientById.occupation}
       </div>
+      <h5>entries</h5>
+      {patientById.entries.length > 0 ? (
+        patientById.entries.map((entry) => (
+          <div key={entry.id}>
+            <p key={entry.id}>
+              {entry.date}
+              {" "}
+              <em>{entry.description}</em>
+            </p>
+            <ul>
+              {entry.diagnosisCodes !== undefined &&
+                entry.diagnosisCodes.map((code: string) => 
+                <li key={code}>{code}</li>)}
+            </ul>
+          </div>))
+      ) : (
+          <p>no entries</p>
+        )}
     </div>
   );
 };
