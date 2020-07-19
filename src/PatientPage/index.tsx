@@ -3,12 +3,13 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Icon } from "semantic-ui-react";
 
-import { Patient } from "../types";
+import { Patient, Diagnosis } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, updatePatient } from "../state";
 
 const PatientPage: React.FC = () => {
-  const [{ patients }, dispatch] = useStateValue();
+  const [{ diagnoses, patients }, dispatch] = useStateValue();
+  // const [{ diagnoses }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
   const patientById = Object.values(patients).find((patient: Patient) => patient.id === id);
 
@@ -42,6 +43,13 @@ const PatientPage: React.FC = () => {
     }
   };
 
+  const diagnosisName = (code: string): string => {
+    const diagnosis = Object.values(diagnoses).find((d: Diagnosis) => d.code === code);
+    if (diagnosis) {
+      return diagnosis.name;
+    } return " ";
+  };
+
   if (!patientById)
     return <div>no patient details</div>;
 
@@ -54,7 +62,7 @@ const PatientPage: React.FC = () => {
         occupation: {patientById.occupation}
       </div>
       <h5>entries</h5>
-      {patientById.entries.length > 0 ? (
+      {patientById.entries &&
         patientById.entries.map((entry) => (
           <div key={entry.id}>
             <p key={entry.id}>
@@ -63,14 +71,15 @@ const PatientPage: React.FC = () => {
               <em>{entry.description}</em>
             </p>
             <ul>
-              {entry.diagnosisCodes !== undefined &&
-                entry.diagnosisCodes.map((code: string) => 
-                <li key={code}>{code}</li>)}
+              {entry.diagnosisCodes &&
+                entry.diagnosisCodes.map((code) => (
+                  <li key={code}>
+                    {code}: {diagnosisName(code)}
+                  </li>
+                ))}
             </ul>
-          </div>))
-      ) : (
-          <p>no entries</p>
-        )}
+          </div>
+          ))}
     </div>
   );
 };
